@@ -13,7 +13,7 @@ Distributed under the zlib png license. See LICENSE for details.
 
 import csv
 
-#comment: was I supposed to type this out or just copy the file from tutorial source?
+#question: was I supposed to type this out or just copy the file from tutorial source?
 
 # Put the full path to your CSV/Excel file here
 MY_FILE = "../data/sample_sfpd_incident_all.csv"
