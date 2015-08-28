@@ -51,8 +51,12 @@ def create_map(data_file):
 	
 	#for each point in our item_list, we add the point to our
 	#dict. setdefault creates a key called 'features' that
-	#has a value type of an empty list. with each iteration, we
+	#has a value type of an empty list. With each iteration, we
 	#are appending our point to that list
+	for point in item_list:
+		geo_map.setdefault('features', []).append(point)
+		#setdefault method: sets a key to features and its value as an empty list
+		#with each iteration, we append the point to the list
 	
 	#now that all data is parsed into GeoJSON, write to a file so we
 	#can upload it to gist.github.com (what is this????)
