@@ -14,7 +14,8 @@ import parse as p  #make it shorter!
 #GeoJSON file.
 
 def create_map(data_file):
-	#define type of GeoJSON we're creating
+	#define type of GeoJSON we're creating (a collection of features)
+	geo_map = {"type": "FeatureCollection"}
 	
 	#define empty list to collect each point to graph
 	
