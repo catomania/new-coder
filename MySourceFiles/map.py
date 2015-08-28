@@ -48,6 +48,7 @@ def create_map(data_file):
 		item_list.append(data)
 	
 	#next, we will build onto our geo_map dict by adding our points from item_list
+	
 	#for each point in our item_list, we add the point to our
 	#dict. setdefault creates a key called 'features' that
 	#has a value type of an empty list. with each iteration, we
