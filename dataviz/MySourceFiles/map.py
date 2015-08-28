@@ -1,5 +1,4 @@
 """ Data Visualization Project
-<<<<<<< HEAD
 
 Parse data from CSV file and make charts and plot on a map!
 
