@@ -52,8 +52,10 @@ def create_map(data_file):
 	#dict. setdefault creates a key called 'features' that
 	#has a value type of an empty list. With each iteration, we
 	#are appending our point to that list
+	
 	for point in item_list:
 		geo_map.setdefault('features', []).append(point)
+		
 		#setdefault method: sets a key to features and its value as an empty list
 		#with each iteration, we append the point to the list
 	
