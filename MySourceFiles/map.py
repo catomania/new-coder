@@ -11,7 +11,7 @@ import geojson #ideally we could just import the dumps part
 import parse as p  #make it shorter!
 
 #the function create_map(data_file) parses through our data file to create a 
-#GeoJSON file.
+#GeoJSON file.	
 
 def create_map(data_file):
 	#define type of GeoJSON we're creating (a collection of features)
@@ -62,3 +62,11 @@ def create_map(data_file):
 	
 	#now that all data is parsed into GeoJSON, write to a file so we
 	#can upload it to gist.github.com (what is this????)
+	with open('file_sf.geojson', 'w') as f:
+		f.write(geojson.dumps(geo_map))
+
+def main():
+	data = p.parse(p.MY_FILE, ",")
+	return create_map(data)
+if __name__ == "__main__":
+	main()
