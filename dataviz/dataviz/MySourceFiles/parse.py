@@ -1,56 +1,47 @@
-"""
-Data Visualization Project
-
-Parse data from an ugly CSV or Excel file, and render it in
-JSON, save to a database, and visualize in graph form.
-
-Part I: Taking data from a CSV/Excel file, and return it into a format
-that is easier for Python to play with.
-
-Copyright (c) 2013 E. Lynn Root
-Distributed under the zlib png license. See LICENSE for details.
-"""
-
 import csv
 
-#question: was I supposed to type this out or just copy the file from tutorial source?
-
-# Put the full path to your CSV/Excel file here
 MY_FILE = "../data/sample_sfpd_incident_all.csv"
 
-
 def parse(raw_file, delimiter):
-    """Parses a raw CSV file to a JSON-like object"""
-
-    # Open CSV file, and safely close it when we're done
-    opened_file = open(raw_file)
-    
-    # Read the CSV data
-    csv_data = csv.reader(opened_file, delimiter=delimiter)
-
-    # Setup an empty list
-    parsed_data = []
-
-    # Skip over the first line of the file for the headers
-    fields = csv_data.next()
-
-    # Iterate over each row of the csv file, zip together field -> value
-    for row in csv_data:
-        parsed_data.append(dict(zip(fields, row)))
-
-    # Close the CSV file
-    opened_file.close()
-
-    return parsed_data
-
+	"""Parses a raw csv file into a JSON-like object."""
+	
+	#open csv file
+	opened_file = open(raw_file)
+	
+	#read csv file
+	#now can get each element one at a time
+	csv_data = csv.reader(opened_file, delimiter=delimiter) #this obj is now an interator
+	
+	parsed_data = [] #empty list
+	
+	#next = skip over 1st rows AND put header values into this variabl
+	fields = csv_data.next() #data headers, .next method, csv_data is generator
+	
+	#good example of how adding a call of next 'removes' the first value from the csv_data
+	#is 2nd answer from the top: http://stackoverflow.com/questions/14551484/trying-to-understand-python-csv-next
+	
+	for row in csv_data:
+		parsed_data.append(dict(zip(fields, row)))
+		#for each loop, we append a dictionary to our list
+		#we use built-in zip() to zip together header->value to make dict
+		#question: why doesn't this make a (fields, fields) dict the first time? 
+	
+	return parsed_data
+	
+	#close csv file	
+	opened_file.close()
 
 def main():
-    # Call our parse function and give it the needed parameters
-    new_data = parse(MY_FILE, ",")
+	#call our parse function
+	new_data = parse(MY_FILE, ",")
+	print new_data #ah, python 2.7... 
+	
+	
+	
+	#build a data structure to return parsed_data
 
-    # Let's see what the data looks like!
-    print new_data
-
-
+#call the main function only if you want to run module as a program by command line
 if __name__ == "__main__":
-    main()
+	main() 
+	
+	

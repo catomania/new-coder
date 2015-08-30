@@ -6,7 +6,6 @@ Part 3: here we parse through each line and and create a geoson file.
 Just copy the output file made into a new Gist (gist.github.com)
 
 (when you do so, be sure to name the gist file with a .geojson ending
-
 """
 
 import geojson #ideally we could just import the dumps part
@@ -51,6 +50,7 @@ def create_map(data_file):
 		item_list.append(data)
 	
 	#next, we will build onto our geo_map dict by adding our points from item_list
+	
 	#for each point in our item_list, we add the point to our
 	#dict. setdefault creates a key called 'features' that
 	#has a value type of an empty list. With each iteration, we
