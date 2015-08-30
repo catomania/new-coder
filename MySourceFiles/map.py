@@ -1,9 +1,11 @@
 """ Data Visualization Project
 Parse data from CSV file and make charts and plot on a map!
 
-Part 3: here we parse through each line and and create a geoson obj,
+Part 3: here we parse through each line and and create a geoson file.
 
-to be collected into 1 geojson file for uploading into gist.github.com
+Just copy the output file made into a new Gist (gist.github.com)
+
+(when you do so, be sure to name the gist file with a .geojson ending
 """
 
 import geojson #ideally we could just import the dumps part
