@@ -24,6 +24,36 @@ class CPIData(object):
 	This stores internally only one value per year.
 	
 	"""
+	
+	def __init__(self):
+		#each year available to the dataset will end up as a simple key-value
+		#pair within this dict. We don't really need any order here so going
+		#with a plain old dictionary is the best approach. 
+		self.year_cpi: {} 
+		
+		# Later on, we will also remember the first and last year we
+		# have found in the dataset to handle years prior or after the 
+		# documented timespan. 
+		self.last_year = None
+		self.first_year = None
+		
+	def load_from_url(self, url, save_as_file=None):
+		"""loads data from a given url.
+		
+		the downloaded file can also be saved into a location for a later
+		re-use with the 'save_as_file' parameter specifying a filename.
+		
+		after fetching the file, this implementation uses load_from_file
+		internally.
+		"""
+		
+	def load_from_file(self, fp):
+		"""Loads CPI data from a given file-like object."""
+	
+	def get_adjusted_price(self, price, year, current_year=None):
+		"""Returns the adapted price from a given year compared to what current
+		year has been specified.
+		"""
 
 
 def main():
