@@ -10,10 +10,20 @@ import os
 
 import matplotlib.pylot as plt
 import numpy as np
-import requests
+import requests #use this to grab CPI data from FRED
 import tablib
 
 CPI_DATA_URL = 'http://research.stlouisfed.org/fred2/data/CPIAUCSL.txt'
+
+#a class is just another object
+#it allows us to create a blueprint to create another object: instances
+#it also allows us to group like-things together
+class CPIData(object):
+	"""Abstraction of the CPI data provided by FRED (Federal Reserve Economic Data).
+	
+	This stores internally only one value per year.
+	
+	"""
 
 
 def main():
