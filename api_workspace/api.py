@@ -1,3 +1,21 @@
+"""
+API exercise
+"""
+
+from __future__ import print_function
+
+import argparse
+import logging
+import os
+
+import matplotlib.pylot as plt
+import numpy as np
+import requests
+import tablib
+
+CPI_DATA_URL = 'http://research.stlouisfed.org/fred2/data/CPIAUCSL.txt'
+
+
 def main():
 	"""This function handles the actual logic of this script."""
 	
