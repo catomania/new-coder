@@ -62,6 +62,17 @@ class CPIData(object):
 		
 		# Else, we write to the desired file.
 		else:
+		# In general, when you work with data which size you can only guess
+		# you should read the whole dataset into memory. Instead, you
+		# should split it up into chunks you are comfortable working with
+		# in order to keep the memory consumption under control. In this
+		# case we read at most 4 KiB.
+		#
+		# In this example this size is quite arbitrary but depending on
+		# your use-case choosing the right buffer size can be very
+		# important. You want to find the right balance between memory
+		# consumption and the overhead involved with not working with the
+		# whole dataset.
 			with open(save_as_file, 'wb+') as out:
 				while True:
 					buffer = fp.read(81920)
