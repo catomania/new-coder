@@ -54,6 +54,23 @@ class CPIData(object):
 		# we just disable gzip with the empty "Accept-Encoding" header.
 		fp = requests.get(url, stream=True,
 						  headers={'Accept-Encoding': None}).raw
+						  
+		# If we did not pass in a save_as_file parameter, we just return the
+		# raw data we got from the previous line.
+		if save_as_file is None:
+			return self.load_from_file(fp) #load_from_file is a function further down
+		
+		# Else, we write to the desired file.
+		else:
+			with open(save_as_file, 'wb+') as out:
+				while True:
+					buffer = fp.read(81920)
+					if not buffer:
+						break
+					out.write(buffer)
+			with open(save_as_file) as fp:
+				return self.load_from_file(fp)
+			
 		
 	def load_from_file(self, fp):
 		"""Loads CPI data from a given file-like object."""
