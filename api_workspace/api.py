@@ -152,6 +152,37 @@ class GiantbombAPI(object):
 	Note that this implementation only exposes of the API what we really need.
 	"""
 	
+	base_url = 'http://www.giantbomb.com/api'
+	
+	def __init__(self, api_key):
+		self.api_key = api_key
+		
+	def get_platforms(self, sort=None, filter=None, field_list=None):
+		"""Generator yielding platforms given the matching criteria. If no
+		limit is specified, this will return *all* platforms.
+		"""
+	
+	# The API itself allows us to filter the data returned either
+	# by requesting only a subset of data elements or a subset with each
+	# data element (like only the name, the price and the release date). 
+	#
+	# The following lines also do value-format conversions from what's
+	# common in Python (lists, dictionaries) into what the API requires.
+	# This is especially apparent with the filter-parameter where we
+	# need to convert a dictionary of criteria into a comma-separated
+	# list of key:value pairs.
+	params = {}
+	if sort is not None:
+		params['sort'] = sort
+	if field_list is not None:
+		params['field_list'] = ','.join(field_list)
+	if filter is not None:
+		params['filter'] = filter
+		parsed_filters = []
+		for key, value in filter.iteritems():
+			parsed_filters.append('{0}:{1}'.format(key, value))
+		params['filter'] = ','.join(parsed_filters)	
+	
 def main():
 	"""This function handles the actual logic of this script."""
 	
