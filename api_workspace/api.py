@@ -135,7 +135,14 @@ class CPIData(object):
 		
 		return float(price) / year_cpi * current_cpi  #price comes from giantbomb?
 
-
+class GiantbombAPI(object):
+	""" 
+	Very simple implementation of the Giantbomb API that only offers the 
+	GET /platforms/ call as a generator.
+	
+	Note that this implementation only exposes of the API what we really need.
+	"""
+	
 def main():
 	"""This function handles the actual logic of this script."""
 	
