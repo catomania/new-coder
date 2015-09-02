@@ -73,12 +73,10 @@ class CPIData(object):
 		# important. You want to find the right balance between memory
 		# consumption and the overhead involved with not working with the
 		# whole dataset.
+			buffer_size = 4 * 1024
 			with open(save_as_file, 'wb+') as out:
-				while True:
-					buffer = fp.read(81920)
-					if not buffer:
-						break
-					out.write(buffer)
+				for chunk in response.iter_content(buffer_size):
+					out.write(chunk)
 			with open(save_as_file) as fp:
 				return self.load_from_file(fp)
 				
