@@ -8,7 +8,7 @@ import argparse
 import logging
 import os
 
-import matplotlib.pylot as plt
+import matplotlib.pyplot as plt
 import numpy as np
 import requests #use this to grab CPI data from FRED
 import tablib
@@ -29,7 +29,7 @@ class CPIData(object):
 		#each year available to the dataset will end up as a simple key-value
 		#pair within this dict. We don't really need any order here so going
 		#with a plain old dictionary is the best approach. 
-		self.year_cpi: {} 
+		self.year_cpi = {}
 		
 		# Later on, we will also remember the first and last year we
 		# have found in the dataset to handle years prior or after the 
@@ -46,6 +46,14 @@ class CPIData(object):
 		after fetching the file, this implementation uses load_from_file
 		internally.
 		"""
+		
+		#We don't really know how much data we are going to get here, so
+		# it is recommended to just keep as little data as possible in memory
+		# at all times. Since python-requests supports gzip-compression by
+		# default and decoding these chunks on their own isn't easy,
+		# we just disable gzip with the empty "Accept-Encoding" header.
+		fp = requests.get(url, stream=True,
+						  headers={'Accept-Encoding': None}).raw
 		
 	def load_from_file(self, fp):
 		"""Loads CPI data from a given file-like object."""
