@@ -262,7 +262,6 @@ def generate_plot(platforms, output_file):
 	width = 0.3
 	ind = np.arange(len(values))
 	
-	#fig = plt.figure(figsize=(len(labels) * 1.8, 10))
 	fig = plt.figure(figsize=(len(labels) * 1.8, 10))
 	plt.rcParams['figure.figsize'] = 12, 8 
 	
