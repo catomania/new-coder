@@ -181,8 +181,57 @@ class GiantbombAPI(object):
 		parsed_filters = []
 		for key, value in filter.iteritems():
 			parsed_filters.append('{0}:{1}'.format(key, value))
-		params['filter'] = ','.join(parsed_filters)	
+		params['filter'] = ','.join(parsed_filters)
+		
+	# Last but not least we append our API key to the list of parameters
+	# and tell the API that we would like to have our data being returned
+	# as JSON
+	params['api_key'] = self.api_key
+	params['format'] = 'json'
 	
+	incomplete_result = True
+	num_total_results = None
+	num_fetched_results = 0
+	counter = 0
+	
+	while incomplete_result:
+		# Giantbomb's limit for items in a result set for this API is 100
+		# items. But given that there are more than 100 platforms in their
+		# database we will have to fetch them in more than one call.
+		#
+		# Most APIs that have such limits (and most do) offer a way to
+		# page through result sets using either a 'page' or (as is here
+		# the case) an 'offset' parameter which allows you to 'skip' a
+		# certain number of items.
+		params['offset'] = num_fetched_results
+		result = requests.get(self.base_url + '/platforms/',
+							  params=params)
+		result = result.json()
+		if num_total_results is None:
+			num_total_results = int(result['number_of_total_results'])
+		num_fetched_results += int(result['number_of_page_results'])
+		if num_fetched_results >= num_total_results:
+			incomplete_result = False
+		for item in result['results']:
+			logging.debug("Yielding platform {0} of {1}".format(
+				counter + 1,
+				num_total_results))
+				
+			# Since this is supposed to be an abstraction, we also convert
+			# values here into a more useful format where appropriate.
+			if 'original_price" in item and item['original_price']:
+				item['original_price'] = float(item['original_price'])
+			
+			# The "yield" keyword is what makes this a generator.
+			# Implementing this method as generator as the advantage
+			# that we can stop fetching of further data from the server
+			# dynamically from the outside by simply stop iterating over
+			# the generator.
+			yield item
+			counter += 1
+	
+
+					
 def main():
 	"""This function handles the actual logic of this script."""
 	
