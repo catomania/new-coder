@@ -19,9 +19,9 @@ class LivingSocialSpider(BaseSpider): #inherit from scrapy's BaseSpider
 	"""Spider for regularly updated livingsocial.com site, SF page"""
 	name = "livingsocial"
 	allowed_domains = ["livingsocial.com"]
-	start_urls = ["http://www.livingsocial.com/cities/15-san-francisco"]
+	start_urls = ["http://www.livingsocial.com/cities/15-san-francisco"] #start crawling here
 	
-	deals_list_xpath = '//li[@dealid]'
+	deals_list_xpath = '//li[@dealid]' #guiding spider on what to pull from html source
 	item_fields = {
 		'title': './/span[@itemscope]/meta[@itemprop="name"]/@content',
 		'link': './/a/@href',
