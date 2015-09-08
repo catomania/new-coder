@@ -6,18 +6,20 @@
 
 
 
-BOT_NAME: 'livingsocial' # defining a global, app caps = convention for variables we won't be changing
+BOT_NAME = 'livingsocial' # defining a global, app caps = convention for variables we won't be changing
 
 SPIDER_MODULES = ['scraper_app.spiders'] 
 
 ITEM_PIPELINES = ['scraper_app.pipelines.LivingSocialPipeline']
 
-DATABSE = {
+DATABASE = {
 	'drivername': 'postgres', # type of db we are using
 	'host': 'localhost', 
 	'port': '5432', # what port postgres is running
-	'username': 'YOUR_USERNAME' # fill in username here
-	'password': '', # fill in password here - I didn't create a password
+	'username': open('test_username.txt').read(), # fill in username here
+	'password': '', # empty on on purpose
 	'database': 'scrape' # the db we create in the tutorial
 
 }
+
+print DATABASE.items()
