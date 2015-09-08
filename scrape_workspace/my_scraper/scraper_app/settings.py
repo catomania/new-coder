@@ -16,10 +16,8 @@ DATABASE = {
 	'drivername': 'postgres', # type of db we are using
 	'host': 'localhost', 
 	'port': '5432', # what port postgres is running
-	'username': open('test_username.txt').read(), # fill in username here
+	'username': open('test_username.txt').read(), # fill in username in your test_username.txt file
 	'password': '', # empty on on purpose
 	'database': 'scrape' # the db we create in the tutorial
 
 }
-
-print DATABASE.items()
