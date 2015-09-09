@@ -40,4 +40,5 @@ class LivingSocialPipeline(object):
 			raise
 		finally:
 			session.close() # whether or not we are successful, close the connection
+		
 		return item

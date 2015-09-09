@@ -16,9 +16,6 @@ DATABASE = {
 	'host': 'localhost', 
 	'port': '5432', # what port postgres is running
 	'username': open('test_username.txt').read(), # fill in username here
-	'password': '', # empty on on purpose
-	'database': 'scrape' # the db we create in the tutorial
-
+	'password': 'YOUR_PASSWORD', # empty on on purpose
+	'database': 'scrape'
 }
-
-print DATABASE.items()
