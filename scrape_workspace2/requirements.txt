@@ -1,0 +1,3 @@
+SQLAlchemy==0.9.8
+Scrapy==1.0.3
+psycopg2==2.5.4
