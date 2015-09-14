@@ -8,3 +8,4 @@ twistd.pid
 website/_site/
 username.txt
 scrape_workspace/my_scraper/scraper_app/test_username.txt
+scrape_workspace/test_reddit_scraper/reddit_scraper/test_username.txt
