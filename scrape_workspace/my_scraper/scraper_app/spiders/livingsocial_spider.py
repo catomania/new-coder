@@ -50,6 +50,7 @@ class LivingSocialSpider(BaseSpider): #inherit from scrapy's BaseSpider
 			loader = XPathItemLoader(LivingSocialDeal(), selector=deal) #iterate over each deal
 			
 			# define processors
+			# An Item Loader contains one input processor and one output processor for each (item) field.
 			loader.default_input_processor = MapCompose(unicode.strip) #strip out white-space of unicode strings
 			loader.default_output_processor = Join() #join data by a space
 			
