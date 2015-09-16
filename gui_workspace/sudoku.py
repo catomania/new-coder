@@ -51,3 +51,12 @@ class SudokuBoard(object):
 
 		# Return the constructed board
 		return board
+
+class SudokuGame(object):
+	"""
+	A Sudoku game, in charge of storing the state of the board and checking
+	whether the puzzle is completed.
+	"""
+	def __init__(self, board_file):
+		self.board_file = board_file
+		self.start_puzzle = SudokuBoard(board_file).board # .board here calls the board method from the SudokuBoard class
