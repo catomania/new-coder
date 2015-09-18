@@ -59,4 +59,12 @@ class SudokuGame(object):
 	"""
 	def __init__(self, board_file):
 		self.board_file = board_file
-		self.start_puzzle = SudokuBoard(board_file).board # .board here calls the board method from the SudokuBoard class
+		self.start_puzzle = SudokuBoard(board_file).board # 'gets' .board from the init method of SudokuBoard
+
+	def start(self):
+		self.game_over = False # flag to see if game is over or not
+		self.puzzle = [] 
+		for i in xrange(9): # create a copy of the puzzle
+			self.puzzle.append([])  
+			for j in xrange(9):
+				self.puzzle[i].append(start.start_puzzle[i][j])
