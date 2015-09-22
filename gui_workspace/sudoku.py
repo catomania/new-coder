@@ -52,7 +52,7 @@ class SudokuBoard(object):
 		# Return the constructed board
 		return board
 
-class SudokuGame(object):
+class SudokuGame(object): # creates actual board for game
 	"""
 	A Sudoku game, in charge of storing the state of the board and checking
 	whether the puzzle is completed.
@@ -65,6 +65,20 @@ class SudokuGame(object):
 		self.game_over = False # flag to see if game is over or not
 		self.puzzle = [] 
 		for i in xrange(9): # create a copy of the puzzle
-			self.puzzle.append([])  
-			for j in xrange(9):
-				self.puzzle[i].append(start.start_puzzle[i][j])
+			self.puzzle.append([])  # makes 9 empty lists within the puzzle list
+			for j in xrange(9): # for each empty list made from above, append X nine times
+				self.puzzle[i].append(self.start_puzzle[i][j]) # put numbers within the empty lists from .board[i][j]?
+
+	def check_win(self): # function to check board's rows, columns, and each 3x3 square
+		for row in xrange(9): #why is range different from xrange?
+			if not self.__check_row(row): # helper function that needs to be defined
+				return False 
+		for column in xrange(9):
+			if not self.__check_column(column):
+				return False
+		for row in xrange(3):
+			for column in xrange(3):
+				if not self.__check_square(row, column):
+					return False
+		self.game_over = True #set flag to True
+		return True # flag for winning the game?
