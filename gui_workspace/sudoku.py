@@ -82,3 +82,19 @@ class SudokuGame(object): # creates actual board for game
 					return False
 		self.game_over = True #set flag to True
 		return True # flag for winning the game?
+
+	def __check_block(self, block): # main logic method
+	# set: http://www.programiz.com/python-programming/set
+	# this returns true ONLY if the block we pass in is equal to 1 - 9
+	# IS set(block) equal to 1 - 9 only once? True or False?
+		return set(block) == set(range(1, 10)) # what is python 'set'?
+
+	def __check_row(self, row): 
+		return self.__check_block(self.puzzle(row)):
+
+
+
+
+
+
+
