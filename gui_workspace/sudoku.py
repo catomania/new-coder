@@ -1,5 +1,5 @@
 import argparse
-from Tkinter import Tk, Canvas, Frame, Button, BOTH, TOP, BOTTOM
+from Tkinter import Tk, Canvas, Frame, Button, BOTH, TOP, BOTTOM # what do these things from Tkinter do?
 
 BOARDS = ['debug', 'n00b', 'l33t', 'error'] # sudoku boards available
 MARGIN = 20 # pixels around board
