@@ -27,21 +27,65 @@ class SudokuUI(Frame): # Frame is a rectangular region on a screen
 
 	def __initUI(self):
 		self.parent.title("Sudoku") # our parent window will be called Sudoku
-		self.pack(fill=BOTH, expand=1) # Frame attribute, fill the entire frame
+		self.pack(fill=BOTH, expand=1) # Frame attribute, organizes geometry relative to parent, fill options: both, none, x, y
 		self.canvas = Canvas(self, 
 							 width=WIDTH,
 							 height=HEIGHT)
-		self.canvas.pack(fill=BOTH, side=TOP)
+		self.canvas.pack(fill=BOTH, side=TOP) # canvas attribute, helps display our board
 		clear_button = Button(self,
 							  text="Clear answers",
 							  command=self.__clear_answers)
-		clear_button.pack(fill=BOTH, side=BOTTOM) # Clear button is at the bottom
+		clear_button.pack(fill=BOTH, side=BOTTOM) # Clear button is at the bottom and fills the space
 
 		self.__draw_grid() # helper functions
 		self.__draw_puzzle()
 
-		self.canvas.bind("<Button-1>", self.__cell_clicked) #what does this do?
-		self.canvas.bind("<Key>", self.__key_pressed) # and what does this do?
+		self.canvas.bind("<Button-1>", self.__cell_clicked) # binds Button-1 to a callback, another method: cell_clicked
+		# in Tkinter, Button-1 is a default left mouse click
+		self.canvas.bind("<Key>", self.__key_pressed) # binds the key (guesed number) to the key presseed method
+
+	def __draw_grid(self): # make the sudoku layout, do all private functions take self and then other potential arguments?
+		"""
+		Draws grid divided with blue lines into 3x3 squares
+		"""
+
+		for i in xrange(10):
+			color = "blue" if i % 3 == 0 else "gray" # blue lines if divisible by 3
+
+			# draw vertical lines
+			x0 = MARGIN + i * SIDE 
+			y0 = MARGIN
+			x1 = MARGIN + i * SIDE
+			y1 = HEIGHT - MARGIN
+			self.canvas_create_line(x0, y0, x1, y1, fill=color) # draw the vertical lines coordinates are (x0, y0) (x1, y1)
+
+			# draw horizontal lines
+			x0 = MARGIN
+			y0 = MARGIN + i * SIDE
+			x1 = WIDTH - MARGIN
+			y1 = MARGIN + i * SIDE
+			self.canvas_create_line(x0, y0, x1, y1, fill=color)
+
+	def __draw_puzzle(self):
+		self.canvas.delete("numbers") # delete old numbers? hrm?
+		for i in xrange(9):
+			for j in xrange(9:):
+				answer = self.game.puzzle[i][j]
+				if answer != 0:
+					x = MARGIN + j * SIDE + SIDE / 2 # in the middle of the applicable cell
+
+	def __draw_cursor(self):
+		self.canvas.delete("cursor")
+		if self.row >= 0 and self.col >= 0: # you set these variables as 0 first in init
+		x0 = MARGIN + self.col * SIDE + 1
+		y0 = MARGIN + self.row * SIDE + 1
+		x1 = MARGIN + (self.col + 1) * SIDE - 1
+		y1 = MARGIN + (self.row + 1) * SIDE - 1
+		self.canvas.create_rectange(
+			x0, y0, x1, y1,
+			outline="red", tags="cursor")
+
+
 
 class SudokuBoard(object):
 	"""
