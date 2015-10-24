@@ -85,7 +85,28 @@ class SudokuUI(Frame): # Frame is a rectangular region on a screen
 			x0, y0, x1, y1,
 			outline="red", tags="cursor")
 
+	def __draw_victory(self):
+		# creates an oval/circle
+		x0 = y0 = MARGIN + SIDE * 2 # upper left box of circle starts margin + 2 rows in
+		x1 = y1 = MARGIN + SIDE * 7
+		self.canvas.create_oval(
+			x0, y0, x1, y1, tags="victory", fill="dark orange", outline="orange")
 
+		# create text
+		x = y = MARGIN + 4 * SIDE + SIDE / 2 # middle of the circle
+		self.canvas.create_text(
+			x, y,
+			text="You win!", tags="victory",
+			fill="white", font=("Arial", 32)
+		)
+
+	def __cell_clicked(self, event):
+		if self.game.game_over:
+			return # do nothing if game is over
+
+			x, y = event.x, event.y
+			if (MARGIN < X < WIDTH - MARGIN and MARGIN < y < HEIGHT - MARGIN): # if our puzzle grid is clicked
+				self.canvas.focus_set() # focus_set: move focus to a widget
 
 class SudokuBoard(object):
 	"""
@@ -180,6 +201,8 @@ class SudokuGame(object): # creates actual board for game
 
 				]
 			)
+
+
 
 
 
