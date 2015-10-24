@@ -12,6 +12,35 @@ class SudokuError(Exception): # In the future, we'll use this error class to pas
 	"""
 	pass
 
+def parse_arguments():
+	"""
+	Parses arguments of the form:
+		sudoku.py <board name>
+	Where 'board name' must be in the 'BOARD' list
+	"""
+
+	# example input: python sudoku.py --board n00b 
+	# your --board is a flag
+
+	arg_parser = argparse.ArgumentParser() # instantiate ArgumentParser from the argparse library
+	arg_parser.add_argument("--board", 
+							help="Desired board name",
+							type=str,
+							choices=BOARDS,
+							required=True)
+
+	# Creates a dictionary of keys = argument flag, and value = argument
+	args = vars(arg_parser.parse_args()) # parse_args is from the argparse library, vars makes a dict
+
+	# ArgumentParser parses arguments through the parse_args() method, which inspects the CL, converts each arg to the specified type 
+	# and invokes the 'appropriate' action
+
+	return args['board'] # board is the dict key, this returns you the name of the board like --board n00b 
+
+	# so basically you get the name of the board from the CLI input
+
+
+
 class SudokuUI(Frame): # Frame is a rectangular region on a screen
 	"""
 	The Tkinter UI, responsible for drawing the board and accepting user input
@@ -77,8 +106,8 @@ class SudokuUI(Frame): # Frame is a rectangular region on a screen
 	def __draw_cursor(self):
 		self.canvas.delete("cursor")
 		if self.row >= 0 and self.col >= 0: # you set these variables as 0 first in init
-		x0 = MARGIN + self.col * SIDE + 1
-		y0 = MARGIN + self.row * SIDE + 1
+		x0 = MARGIN + self.col * SIDE + 1 # what does -1 do to these variables?
+ 		y0 = MARGIN + self.row * SIDE + 1
 		x1 = MARGIN + (self.col + 1) * SIDE - 1
 		y1 = MARGIN + (self.row + 1) * SIDE - 1
 		self.canvas.create_rectange(
@@ -100,13 +129,44 @@ class SudokuUI(Frame): # Frame is a rectangular region on a screen
 			fill="white", font=("Arial", 32)
 		)
 
-	def __cell_clicked(self, event):
+	def __cell_clicked(self, event): # event parameter: gives us x&y coordinates of where user clicked
 		if self.game.game_over:
 			return # do nothing if game is over
 
-			x, y = event.x, event.y
-			if (MARGIN < X < WIDTH - MARGIN and MARGIN < y < HEIGHT - MARGIN): # if our puzzle grid is clicked
-				self.canvas.focus_set() # focus_set: move focus to a widget
+		x, y = event.x, event.y
+		if (MARGIN < X < WIDTH - MARGIN and MARGIN < y < HEIGHT - MARGIN): # if our puzzle grid is clicked
+			self.canvas.focus_set() # focus_set: move focus to a widget
+
+			# get row and col numbers from x, y coordinates
+			row, col = (y - MARGIN) / SIDE, (x - MARGIN) / SIDE
+
+			# if cell was selected already, another click should de-select it
+			if (row, col) == (self.row, self.col):
+				self.row, self.col = -1, -1 # I assume -1 means de-selecting?
+			elif self.game.puzzle[row][col] == 0: # otherwise, grab corresponding cell 
+				self.row, self.col = row, col
+			else:
+				self.row, self.col = -1, -1 
+
+			self.__draw_cursor()
+
+
+
+	def __key_pressed(self, event):
+		if self.game.game_over:
+			return
+		if self.row >= 0 and self.col >= 0 and event.char = "123456789": # where does event.char come from? tkinter?
+			self.game.puzzle[self.row][self.col] = int(event.char)
+			self.col, self.row = -1, -1
+			self.__draw_puzzle()
+			self.__draw_cursor()
+			if self.game.check_win():
+				self.__draw_victory()
+
+	def __clear_answers(self):
+		self.game.start()
+		self.canvas.delete("victory") # remove the victory circle
+		self.__draw_puzzle()
 
 class SudokuBoard(object):
 	"""
@@ -201,6 +261,18 @@ class SudokuGame(object): # creates actual board for game
 
 				]
 			)
+
+if __name__ == '__main__':
+	board_name = parse_arguments() # parse_arguments() returns board name
+
+	with open('%s.sudoku' % board_name, 'r') as boards_file: # what is boards_file?
+		game = SudokuGame(boards_file) # create a SudokuGame object
+		game.start()
+
+		root = Tk() # I always see this line of code w/ Tkinter tutorials, no need to assign the instantiated SudokuUI class
+		SudokuUI(root, game)
+		root.geometry("%dx%d" % (WIDTH, HEIGHT + 40)) # draw root slightly larger
+		root.mainloop()  # I see this line as well in Tkinter programs, this is what starts the program
 
 
 
