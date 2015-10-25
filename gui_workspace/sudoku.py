@@ -46,11 +46,11 @@ class SudokuUI(Frame): # Frame is a rectangular region on a screen
 	The Tkinter UI, responsible for drawing the board and accepting user input
 	"""
 	def __init__(self, parent, game):
-		self.parent = parent # all widgets belong to a parent
 		self.game = game
 		Frame.__init__(self, parent)
-
-		self.row, self.col = 0, 0 # initialize row and col to use later
+		self.parent = parent # all widgets belong to a parent
+		
+		self.row, self.col = -1, -1 # initialize row and col to use later
 
 		self.__initUI() # calls the initUI function
 
@@ -86,33 +86,40 @@ class SudokuUI(Frame): # Frame is a rectangular region on a screen
 			y0 = MARGIN
 			x1 = MARGIN + i * SIDE
 			y1 = HEIGHT - MARGIN
-			self.canvas_create_line(x0, y0, x1, y1, fill=color) # draw the vertical lines coordinates are (x0, y0) (x1, y1)
+			self.canvas.create_line(x0, y0, x1, y1, fill=color) # draw the vertical lines coordinates are (x0, y0) (x1, y1)
 
 			# draw horizontal lines
 			x0 = MARGIN
 			y0 = MARGIN + i * SIDE
 			x1 = WIDTH - MARGIN
 			y1 = MARGIN + i * SIDE
-			self.canvas_create_line(x0, y0, x1, y1, fill=color)
+			self.canvas.create_line(x0, y0, x1, y1, fill=color)
 
 	def __draw_puzzle(self):
-		self.canvas.delete("numbers") # delete old numbers? hrm?
+		self.canvas.delete("numbers") # delete old numbers?
 		for i in xrange(9):
-			for j in xrange(9:):
+			for j in xrange(9):
 				answer = self.game.puzzle[i][j]
 				if answer != 0:
 					x = MARGIN + j * SIDE + SIDE / 2 # in the middle of the applicable cell
+					y = MARGIN + i * SIDE + SIDE / 2
+					original = self.game.start_puzzle[i][j]
+					color = "black" if answer == original else "sea green"
+					self.canvas.create_text(
+						x, y, text=answer, tags="numbers", fill=color
+
+						)
 
 	def __draw_cursor(self):
 		self.canvas.delete("cursor")
 		if self.row >= 0 and self.col >= 0: # you set these variables as 0 first in init
-		x0 = MARGIN + self.col * SIDE + 1 # what does -1 do to these variables?
- 		y0 = MARGIN + self.row * SIDE + 1
-		x1 = MARGIN + (self.col + 1) * SIDE - 1
-		y1 = MARGIN + (self.row + 1) * SIDE - 1
-		self.canvas.create_rectange(
-			x0, y0, x1, y1,
-			outline="red", tags="cursor")
+			x0 = MARGIN + self.col * SIDE + 1 # what does -1 do to these variables?
+	 		y0 = MARGIN + self.row * SIDE + 1
+			x1 = MARGIN + (self.col + 1) * SIDE - 1
+			y1 = MARGIN + (self.row + 1) * SIDE - 1
+			self.canvas.create_rectangle(
+				x0, y0, x1, y1,
+				outline="red", tags="cursor")
 
 	def __draw_victory(self):
 		# creates an oval/circle
@@ -134,7 +141,7 @@ class SudokuUI(Frame): # Frame is a rectangular region on a screen
 			return # do nothing if game is over
 
 		x, y = event.x, event.y
-		if (MARGIN < X < WIDTH - MARGIN and MARGIN < y < HEIGHT - MARGIN): # if our puzzle grid is clicked
+		if (MARGIN < x < WIDTH - MARGIN and MARGIN < y < HEIGHT - MARGIN): # if our puzzle grid is clicked
 			self.canvas.focus_set() # focus_set: move focus to a widget
 
 			# get row and col numbers from x, y coordinates
@@ -154,13 +161,13 @@ class SudokuUI(Frame): # Frame is a rectangular region on a screen
 
 	def __key_pressed(self, event):
 		if self.game.game_over:
-			return
-		if self.row >= 0 and self.col >= 0 and event.char = "123456789": # where does event.char come from? tkinter?
+			return 
+		if self.row >= 0 and self.col >= 0 and event.char in "1234567890": # where does event.char come from? tkinter?
 			self.game.puzzle[self.row][self.col] = int(event.char)
 			self.col, self.row = -1, -1
 			self.__draw_puzzle()
 			self.__draw_cursor()
-			if self.game.check_win():
+			if self.game.check_win(): # every time you enter in a number, the game checks to see if you have won
 				self.__draw_victory()
 
 	def __clear_answers(self):
@@ -168,12 +175,12 @@ class SudokuUI(Frame): # Frame is a rectangular region on a screen
 		self.canvas.delete("victory") # remove the victory circle
 		self.__draw_puzzle()
 
-class SudokuBoard(object):
+class SudokuBoard(object): # attribute canvas_create_line??
 	"""
 	Sudoku Board representation, the wonders of OOP
 	"""
 	def __init__(self, board_file): # when a new board is created, it should initialize w/ the name of the .sudoku file
-		self.board = board_file # set self.board = to private function
+		self.board = self.__create_board(board_file) # set self.board = to private function
 
 	def __create_board(self, board_file):
 		# create an initial matrix, or a list of a list
@@ -185,7 +192,6 @@ class SudokuBoard(object):
 
 			# raise error if line is longer or shorter than 9 characters
 			if len(line) != 9:
-				board = [] # this line exists on www but not in the reference script
 				raise SudokuError(
 					"Each line in the sudoku puzzle must be 9 chars long") 
 
