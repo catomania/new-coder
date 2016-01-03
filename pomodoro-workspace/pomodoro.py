@@ -20,7 +20,11 @@ pause = False
 let_me_quit = False
 
 # countdowns in seconds
-my_countdown_seconds = [20]
+my_countdown_seconds = []
+twenty_five_minutes = 1500
+
+short_break_seconds = [300]
+
 # to record the last function that was called
 last_function_called = []
 
@@ -30,22 +34,32 @@ def quit_me():
 	let_me_quit= True
 	raise SystemExit
 
+# main 25:00 timer
 def count_down():
-	get_timer = timer_display.get()
-	get_label = type_of_activity.get()
 
 	# set a last_function_called value
-	# you can still clear out an already empty list
-	del last_function_called[:]
+	del last_function_called[:] # you can still clear out an already empty list
 	last_function_called.append("count_down")
 
 	# make sure that you're counting down from the top if you're starting at 00:00, otherwise resume mid-countdown
 	#  is it not-pythonic to not have an "else" statement after an if statement?
 	# what if you're coming back from a short break?
-	if get_label == "Break Time" or "Not Started":
+	get_label = type_of_activity.get()
+	
+	if get_label == "Break Time" or get_label == "Not Started":
 		del my_countdown_seconds[:]
-		my_countdown_seconds.append(20)
-
+		my_countdown_seconds.append(twenty_five_minutes)
+	
+	elif not get_label:
+		my_countdown_seconds.append(twenty_five_minutes)
+	
+	# else: get the time left on the label and proceed from there after coming back from a pause
+	else:
+		get_time = str(timer_display.get())
+		timer_minutes = get_time.split(":")
+		del my_countdown_seconds[:]
+		my_countdown_seconds.append(int(timer_minutes[0]) * 60 + int(timer_minutes[1]))
+	
 	# "work time" loop
 	for t in range(int(my_countdown_seconds[-1]), -1, -1): # get and update current range
 		if last_function_called[0] == "pause":
@@ -73,7 +87,7 @@ def count_down():
 			webbrowser.get('firefox').open_new_tab("https://www.youtube.com/watch?v=3yDP9MKVhZc")
 				# once loop is done, call short break
 			del short_break_seconds[:]
-			short_break_seconds.append(10000)
+			short_break_seconds.append(300)
 			short_break()
 
 def short_break():
@@ -106,7 +120,7 @@ def short_break():
 	# once short break is done, go back to the 25 minute countdown
 	if short_break_seconds[-1] == 0:
 		del my_countdown_seconds[:]
-		my_countdown_seconds.append(10)
+		my_countdown_seconds.append(twenty_five_minutes)
 		count_down()
 
 def timer_reset():
@@ -118,38 +132,47 @@ def timer_reset():
 		last_function_called.append("reset")
 
 	del short_break_seconds[:]
-	short_break_seconds.append(10000)
+	short_break_seconds.append(300)
 
 	del my_countdown_seconds[:]
-	my_countdown_seconds.append(10)
+	my_countdown_seconds.append(twenty_five_minutes)
 
 	# call default view
 	default_view()
 
 def pause_or_resume():
 
+	global pause
+
 	get_label = type_of_activity.get() # no label, short, long, not started
 
+	# pause if I hit this a second time not in succession
 	if not get_label:
 		count_down()
+	
 	elif get_label == "Not Started":
 		count_down()
-	else:
-		global pause
-		if pause == False:
-			pause = True
-			print "pause is true"
-				#for pausing our countdown timers
-			del last_function_called[:]
-			last_function_called.append("pause")
 
-		else:
-			pause = False
-			print "pause is false"
-			if get_label == "Work Time":
-				count_down()
-			if get_label == "Break Time":
-				short_break()
+	elif get_label ==  "Work Time":
+		pause = True
+		del last_function_called[:]		
+		last_function_called.append("pause") # break time paused or work time paused?
+		type_of_activity.set("Work Time: Paused")
+
+	elif get_label == "Break Time":
+		pause = True
+		del last_function_called[:]		
+		last_function_called.append("pause") # break time paused or work time paused?
+		type_of_activity.set("Break Time: Paused")
+
+	elif get_label == "Work Time: Paused":
+		pause = False
+		count_down()
+
+	elif get_label == "Break Time: Paused":
+		pause = False
+		short_break()
+
 
 def default_view():
 	# set 0 time and say "not started"
@@ -158,22 +181,24 @@ def default_view():
 	timer_display.set("00:00")
 	root.update()
 
-root = Tk()
+root = Tk() # no parent needed to be passed as a parameter for the root window
 root.title("Pomodoro Me")
 
 # build the Timer window and widgets
 
-mainframe = ttk.Frame(root, padding="3 3 12 12")
+mainframe = ttk.Frame(root, padding="3 3 12 12") # when creating a widget, parent must be passed as parameter
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
 mainframe.columnconfigure(0, weight=1)
 mainframe.rowconfigure(0, weight=1)
 
 timer_display = StringVar()
 type_of_activity = StringVar()
+padding_hack = str(" ") * 30
 
-
-ttk.Label(mainframe, textvariable=timer_display).grid(column=2, row=2, sticky=(W))
-ttk.Label(mainframe, textvariable=type_of_activity).grid(column=2, row=3, sticky=(W, E))
+# padding?
+ttk.Label(mainframe, text=padding_hack).grid(column=2, row=3, sticky=W) # hacky workaround for space for 2nd col
+ttk.Label(mainframe, textvariable=timer_display).grid(column=2, row=2, sticky=W)
+ttk.Label(mainframe, textvariable=type_of_activity).grid(column=2, row=3, sticky=W)#, sticky=(W, E))
 ttk.Button(mainframe, text="Start Timer", command=count_down).grid(column=3, row=3, sticky=W)
 ttk.Button(mainframe, text="Pause", command=pause_or_resume).grid(column=3, row=7, sticky=W)
 ttk.Button(mainframe, text="Reset", command=timer_reset).grid(column=3, row=8, sticky=W)
